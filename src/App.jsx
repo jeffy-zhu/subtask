@@ -32,10 +32,28 @@ function App() {
     }
   };
 
+  const handleDelete = (taskId) => {
+    const getUpdatedTasks = (tasks) => {
+      tasks = tasks.filter((task) => task.id !== taskId);
+
+      for (const task of tasks) {
+        task.subtasks = task.subtasks.filter(
+          (subtask) => subtask.id !== taskId
+        );
+
+        getUpdatedTasks(task.subtasks);
+      }
+
+      return tasks;
+    };
+
+    setTasks(getUpdatedTasks(tasks.slice()));
+  };
+
   return (
     <div>
       <TaskCreate parentTaskId={null} onCreate={handleCreate} />
-      <TaskList tasks={tasks} onCreate={handleCreate} />
+      <TaskList tasks={tasks} onCreate={handleCreate} onDelete={handleDelete} />
     </div>
   );
 }

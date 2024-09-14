@@ -1,12 +1,13 @@
 import TaskList from "./TaskList";
 import TaskCreate from "./TaskCreate";
 
-function TaskShow({ task, onCreate }) {
+function TaskShow({ task, onCreate, onDelete }) {
   return (
     <div>
       {task.name}
       <TaskCreate parentTaskId={task.id} onCreate={onCreate}></TaskCreate>
-      <TaskList tasks={task.subtasks} onCreate={onCreate} />
+      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <TaskList tasks={task.subtasks} onCreate={onCreate} onDelete={onDelete} />
     </div>
   );
 }
