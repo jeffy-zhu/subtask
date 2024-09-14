@@ -34,14 +34,9 @@ function App() {
 
   const handleDelete = (taskId) => {
     const getUpdatedTasks = (tasks) => {
-      tasks = tasks.filter((task) => task.id !== taskId);
-
-      for (const task of tasks) {
-        task.subtasks = task.subtasks.filter(
-          (subtask) => subtask.id !== taskId
-        );
-
-        getUpdatedTasks(task.subtasks);
+      for (const [i, task] of tasks.entries()) {
+        if (task.id === taskId) tasks.splice(i, 1);
+        else getUpdatedTasks(task.subtasks);
       }
 
       return tasks;
