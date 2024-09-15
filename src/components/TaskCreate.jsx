@@ -14,13 +14,11 @@ function TaskCreate({ parentTaskId, onCreate }) {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>Add New Task</label>
-        <input value={taskName} onChange={handleChange} />
-        <button>Add</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} style={{ display: "inline" }}>
+      <label>Add New Task</label>
+      <input value={taskName} onChange={handleChange} />
+      <button>Add</button>
+    </form>
   );
 }
 

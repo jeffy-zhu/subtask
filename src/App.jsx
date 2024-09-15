@@ -45,10 +45,28 @@ function App() {
     setTasks(getUpdatedTasks(tasks.slice()));
   };
 
+  const handleEdit = (taskId, newTaskName) => {
+    const getUpdatedTasks = (tasks) => {
+      for (const task of tasks) {
+        if (task.id === taskId) task.name = newTaskName;
+        else getUpdatedTasks(task.subtasks);
+      }
+
+      return tasks;
+    };
+
+    setTasks(getUpdatedTasks(tasks.slice()));
+  };
+
   return (
     <div>
       <TaskCreate parentTaskId={null} onCreate={handleCreate} />
-      <TaskList tasks={tasks} onCreate={handleCreate} onDelete={handleDelete} />
+      <TaskList
+        tasks={tasks}
+        onCreate={handleCreate}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </div>
   );
 }
