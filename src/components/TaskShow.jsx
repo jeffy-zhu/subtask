@@ -1,38 +1,56 @@
 import TaskList from "./TaskList";
-import TaskCreate from "./TaskCreate";
 import TaskEdit from "./TaskEdit";
-import { useState } from "react";
+import SubtaskCreate from "./SubtaskCreate";
+import { useState, useContext } from "react";
+import TasksContext from "../context/tasks";
 
-function TaskShow({ task, onCreate, onDelete, onEdit }) {
+function TaskShow({ task }) {
   const [showEdit, setShowEdit] = useState(false);
+  const [showAddSubtask, setShowAddSubtask] = useState(false);
+  const { deleteTask, editTaskShowSubtasks } = useContext(TasksContext);
 
-  const handleEditClick = () => {
-    setShowEdit(!showEdit);
+  const handleShowSubtasksClick = () => {
+    task.subtasks.length > 0 &&
+      editTaskShowSubtasks(task.id, !task.showSubtasks);
   };
 
-  const handleEditSubmit = (taskId, newTaskName) => {
-    onEdit(taskId, newTaskName);
-    setShowEdit(false);
-  };
+  let content = showEdit ? (
+    <span>
+      <TaskEdit
+        task={task}
+        onSubmit={() => setShowEdit(false)}
+        onCancel={() => setShowEdit(false)}
+      />
+    </span>
+  ) : (
+    <div>
+      <span onClick={handleShowSubtasksClick}>{task.name}</span>
+      <button onClick={() => setShowAddSubtask(true)}>Add Subtask</button>
+      <button onClick={() => setShowEdit(!showEdit)}>Edit</button>
+      <button onClick={() => deleteTask(task.id)}>Delete</button>
+    </div>
+  );
 
   return (
     <div>
-      {!showEdit ? (
-        <span>
-          {task.name}
-          <TaskCreate parentTaskId={task.id} onCreate={onCreate}></TaskCreate>
-        </span>
-      ) : (
-        <TaskEdit task={task} onEditSubmit={handleEditSubmit} />
+      <div
+        style={{
+          position: "relative",
+          left: `${task.depth * 30}px`,
+          border: "solid",
+        }}
+      >
+        {content}
+      </div>
+      {task.showSubtasks && <TaskList tasks={task.subtasks} />}
+
+      {showAddSubtask && (
+        <SubtaskCreate
+          parentTaskId={task.id}
+          depth={task.depth}
+          onCancel={() => setShowAddSubtask(false)}
+        />
       )}
-      <button onClick={() => onDelete(task.id)}>Delete</button>
-      <button onClick={handleEditClick}>Edit</button>
-      <TaskList
-        tasks={task.subtasks}
-        onCreate={onCreate}
-        onDelete={onDelete}
-        onEdit={onEdit}
-      />
     </div>
   );
 }

@@ -1,22 +1,27 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import TasksContext from "../context/tasks";
 
-function TaskEdit({ task, onEditSubmit }) {
-  const [taskName, setTaskName] = useState(task.name);
+function TaskEdit({ task, onSubmit, onCancel }) {
+  const [newTaskName, setNewTaskName] = useState(task.name);
+  const { editTask } = useContext(TasksContext);
 
-  const handleChange = (event) => {
-    setTaskName(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onEditSubmit(task.id, taskName);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    editTask(task.id, newTaskName);
+    onSubmit();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input value={taskName} onChange={handleChange}></input>
-      <button>Save</button>
-    </form>
+    <div>
+      <form style={{ display: "inline" }} onSubmit={handleSubmit}>
+        <input
+          value={newTaskName}
+          onChange={(event) => setNewTaskName(event.target.value)}
+        />
+        <button>Save</button>
+      </form>
+      <button onClick={onCancel}>Cancel</button>
+    </div>
   );
 }
 
