@@ -3,11 +3,11 @@ import TasksContext from "../context/tasks";
 
 function TaskEdit({ task, onSubmit, onCancel }) {
   const [newTaskName, setNewTaskName] = useState(task.name);
-  const { editTask } = useContext(TasksContext);
+  const { updateTaskName } = useContext(TasksContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    editTask(task.id, newTaskName);
+    updateTaskName(task.id, newTaskName);
     onSubmit();
   };
 
@@ -16,7 +16,7 @@ function TaskEdit({ task, onSubmit, onCancel }) {
       <form style={{ display: "inline" }} onSubmit={handleSubmit}>
         <input
           value={newTaskName}
-          onChange={(event) => setNewTaskName(event.target.value)}
+          onChange={(e) => setNewTaskName(e.target.value)}
         />
         <button>Save</button>
       </form>

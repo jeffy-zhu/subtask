@@ -5,13 +5,12 @@ const TasksContext = createContext();
 function Provider({ children }) {
   const [tasks, setTasks] = useState([]);
 
-  const createTask = (parentTaskId, taskName, depth) => {
+  const createTask = (parentTaskId, name, depth) => {
     const newTask = {
       id: Date.now(),
-      name: taskName,
+      name,
       depth,
       subtasks: [],
-      showSubtasks: true,
     };
 
     const getUpdatedTasks = (tasks) => {
@@ -40,10 +39,12 @@ function Provider({ children }) {
     setTasks(getUpdatedTasks(tasks.slice()));
   };
 
-  const editTask = (taskId, newTaskName) => {
+  const deleteAllTasks = () => setTasks([]);
+
+  const clearSubtasks = (taskId) => {
     const getUpdatedTasks = (tasks) => {
       for (const task of tasks) {
-        if (task.id === taskId) task.name = newTaskName;
+        if (task.id === taskId) task.subtasks = [];
         else getUpdatedTasks(task.subtasks);
       }
 
@@ -53,10 +54,10 @@ function Provider({ children }) {
     setTasks(getUpdatedTasks(tasks.slice()));
   };
 
-  const editTaskShowSubtasks = (taskId, show) => {
+  const updateTaskName = (taskId, newTaskName) => {
     const getUpdatedTasks = (tasks) => {
       for (const task of tasks) {
-        if (task.id === taskId) task.showSubtasks = show;
+        if (task.id === taskId) task.name = newTaskName;
         else getUpdatedTasks(task.subtasks);
       }
 
@@ -70,8 +71,9 @@ function Provider({ children }) {
     tasks,
     createTask,
     deleteTask,
-    editTask,
-    editTaskShowSubtasks,
+    deleteAllTasks,
+    clearSubtasks,
+    updateTaskName,
   };
 
   return (

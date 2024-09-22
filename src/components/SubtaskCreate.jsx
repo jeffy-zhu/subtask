@@ -1,12 +1,9 @@
-import { useState } from "react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import TasksContext from "../context/tasks";
 
 function SubtaskCreate({ parentTaskId, depth, onCancel }) {
   const [subtaskName, setSubtaskName] = useState("");
   const { createTask } = useContext(TasksContext);
-
-  const handleChange = (e) => setSubtaskName(e.target.value);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,15 +12,12 @@ function SubtaskCreate({ parentTaskId, depth, onCancel }) {
   };
 
   return (
-    <div
-      style={{
-        display: "inline",
-        position: "relative",
-        left: `${(depth + 1) * 30}px`,
-      }}
-    >
+    <div>
       <form style={{ display: "inline" }} onSubmit={handleSubmit}>
-        <input value={subtaskName} onChange={handleChange}></input>
+        <input
+          value={subtaskName}
+          onChange={(e) => setSubtaskName(e.target.value)}
+        />
         <button>Save</button>
       </form>
       <button onClick={onCancel}>Cancel</button>

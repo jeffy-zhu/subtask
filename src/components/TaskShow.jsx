@@ -7,11 +7,11 @@ import TasksContext from "../context/tasks";
 function TaskShow({ task }) {
   const [showEdit, setShowEdit] = useState(false);
   const [showAddSubtask, setShowAddSubtask] = useState(false);
-  const { deleteTask, editTaskShowSubtasks } = useContext(TasksContext);
+  const [hideSubtasks, setHideSubtasks] = useState(false);
+  const { deleteTask, clearSubtasks } = useContext(TasksContext);
 
-  const handleShowSubtasksClick = () => {
-    task.subtasks.length > 0 &&
-      editTaskShowSubtasks(task.id, !task.showSubtasks);
+  const handleHideSubtasksClick = () => {
+    task.subtasks.length > 0 && setHideSubtasks(!hideSubtasks);
   };
 
   let content = showEdit ? (
@@ -24,10 +24,13 @@ function TaskShow({ task }) {
     </span>
   ) : (
     <div>
-      <span onClick={handleShowSubtasksClick}>{task.name}</span>
-      <button onClick={() => setShowAddSubtask(true)}>Add Subtask</button>
+      <span onClick={handleHideSubtasksClick}>{task.name} </span>
       <button onClick={() => setShowEdit(!showEdit)}>Edit</button>
-      <button onClick={() => deleteTask(task.id)}>Delete</button>
+      <button onClick={() => setShowAddSubtask(true)}>Add Subtask</button>
+      {task.subtasks.length > 0 && (
+        <button onClick={() => clearSubtasks(task.id)}>Clear Subtasks</button>
+      )}
+      <button onClick={() => deleteTask(task.id)}>Remove</button>
     </div>
   );
 
@@ -42,15 +45,24 @@ function TaskShow({ task }) {
       >
         {content}
       </div>
-      {task.showSubtasks && <TaskList tasks={task.subtasks} />}
-
-      {showAddSubtask && (
-        <SubtaskCreate
-          parentTaskId={task.id}
-          depth={task.depth}
-          onCancel={() => setShowAddSubtask(false)}
-        />
-      )}
+      <div style={{ display: hideSubtasks && "none" }}>
+        <TaskList tasks={task.subtasks} />
+        <div
+          style={{
+            position: "relative",
+            left: `${(task.depth + 1) * 30}px`,
+            border: showAddSubtask && "solid",
+          }}
+        >
+          {showAddSubtask && (
+            <SubtaskCreate
+              parentTaskId={task.id}
+              depth={task.depth}
+              onCancel={() => setShowAddSubtask(false)}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
