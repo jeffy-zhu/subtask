@@ -26,6 +26,32 @@ function Provider({ children }) {
     else setTasks(getUpdatedTasks(tasks.slice()));
   };
 
+  const generateSubtasks = (parentTaskId, names, depth) => {
+    const newSubtasks = [];
+
+    for (const [i, name] of names.entries()) {
+      let newSubtask = {
+        id: Date.now() + i,
+        name: name.taskName,
+        depth,
+        subtasks: [],
+      };
+
+      newSubtasks.push(newSubtask);
+    }
+
+    const getUpdatedTasks = (tasks) => {
+      for (const task of tasks) {
+        if (task.id !== parentTaskId) getUpdatedTasks(task.subtasks);
+        else task.subtasks.push(...newSubtasks);
+      }
+
+      return tasks;
+    };
+
+    setTasks(getUpdatedTasks(tasks.slice()));
+  };
+
   const deleteTask = (taskId) => {
     const getUpdatedTasks = (tasks) => {
       for (const [i, task] of tasks.entries()) {
@@ -70,6 +96,7 @@ function Provider({ children }) {
   const valueToShare = {
     tasks,
     createTask,
+    generateSubtasks,
     deleteTask,
     deleteAllTasks,
     clearSubtasks,
